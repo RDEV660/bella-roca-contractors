@@ -50,6 +50,27 @@ export function FinancingForm() {
       return;
     }
 
+    if (
+      !form.fullName.trim() ||
+      !form.dateOfBirth ||
+      !form.address.trim() ||
+      !form.email.trim() ||
+      !form.phone.trim()
+    ) {
+      setError(t.financing.errorRequired);
+      return;
+    }
+
+    if (form.existingHomeowner === "") {
+      setError(t.financing.errorHomeowner);
+      return;
+    }
+
+    if (!form.workType) {
+      setError(t.financing.errorWorkType);
+      return;
+    }
+
     if (form.socialSecurity.length !== 9) {
       setError(t.financing.errorSsn);
       return;
@@ -96,14 +117,10 @@ export function FinancingForm() {
     );
   }
 
-  const canSubmit =
-    termsAccepted &&
-    form.socialSecurity.length === 9 &&
-    form.existingHomeowner !== "" &&
-    form.workType !== "";
+  const canSubmit = !submitting;
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-8">
+    <form onSubmit={handleSubmit} noValidate className="space-y-8">
       <section className="space-y-5">
         <h2 className="font-display text-xl text-white sm:text-2xl">
           {t.financing.yourInfo}
@@ -127,7 +144,6 @@ export function FinancingForm() {
             value={form.socialSecurity}
             onChange={(digits) => updateField("socialSecurity", digits)}
             hint={t.financing.ssnHint}
-            required
           />
         </div>
 
@@ -246,7 +262,6 @@ export function FinancingForm() {
             checked={termsAccepted}
             onChange={(e) => setTermsAccepted(e.target.checked)}
             className="mt-1 h-5 w-5 shrink-0 accent-gold"
-            required
           />
           <span className="text-sm leading-relaxed text-zinc-300">
             {t.financing.termsBefore}{" "}
@@ -267,7 +282,7 @@ export function FinancingForm() {
       <button
         type="submit"
         className="btn-primary w-full disabled:cursor-not-allowed disabled:opacity-50 sm:w-auto"
-        disabled={!canSubmit || submitting}
+        disabled={!canSubmit}
       >
         {submitting ? t.financing.submitting : t.financing.submit}
       </button>

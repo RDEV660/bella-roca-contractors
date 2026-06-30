@@ -147,6 +147,9 @@ export const es = {
       "Gracias. Un miembro del equipo de Bella Roca revisará su información y se comunicará con usted pronto.",
     errorTerms: "Debe aceptar los términos antes de enviar.",
     errorSsn: "Ingrese un número de Seguro Social válido de 9 dígitos.",
+    errorRequired: "Complete todos los campos obligatorios.",
+    errorHomeowner: "Seleccione si es propietario de vivienda.",
+    errorWorkType: "Seleccione el tipo de trabajo necesario.",
     errorSubmit:
       "No pudimos enviar su solicitud. Por favor llámenos o intente de nuevo.",
   },

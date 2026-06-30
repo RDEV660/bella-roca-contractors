@@ -144,6 +144,9 @@ export const en = {
       "Thank you. A Bella Roca team member will review your information and contact you shortly.",
     errorTerms: "You must accept the terms before submitting.",
     errorSsn: "Please enter a valid 9-digit Social Security number.",
+    errorRequired: "Please fill in all required fields.",
+    errorHomeowner: "Please select whether you are an existing homeowner.",
+    errorWorkType: "Please select the type of work needed.",
     errorSubmit:
       "We could not submit your application. Please call us or try again.",
   },
