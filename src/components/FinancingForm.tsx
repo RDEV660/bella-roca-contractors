@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { FormEvent, useState } from "react";
 import { MaskedSsnInput } from "@/components/MaskedSsnInput";
-import { workTypes } from "@/lib/site";
+import { useLocale } from "@/components/LocaleProvider";
 
 type FormState = {
   fullName: string;
@@ -27,7 +27,10 @@ const emptyForm: FormState = {
   workType: "",
 };
 
+const workTypeKeys = ["remodel", "roofing", "newHome"] as const;
+
 export function FinancingForm() {
+  const { t } = useLocale();
   const [form, setForm] = useState<FormState>(emptyForm);
   const [termsAccepted, setTermsAccepted] = useState(false);
   const [submitted, setSubmitted] = useState(false);
@@ -43,12 +46,12 @@ export function FinancingForm() {
     setError("");
 
     if (!termsAccepted) {
-      setError("You must accept the terms before submitting.");
+      setError(t.financing.errorTerms);
       return;
     }
 
     if (form.socialSecurity.length !== 9) {
-      setError("Please enter a valid 9-digit Social Security number.");
+      setError(t.financing.errorSsn);
       return;
     }
 
@@ -60,6 +63,8 @@ export function FinancingForm() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           ...form,
+          workType:
+            form.workType === "newHome" ? "new-home" : form.workType,
           termsAccepted: true,
         }),
       });
@@ -72,9 +77,7 @@ export function FinancingForm() {
       setForm(emptyForm);
       setTermsAccepted(false);
     } catch {
-      setError(
-        "We could not submit your application. Please call us or try again.",
-      );
+      setError(t.financing.errorSubmit);
     } finally {
       setSubmitting(false);
     }
@@ -82,13 +85,12 @@ export function FinancingForm() {
 
   if (submitted) {
     return (
-      <div className="animate-fade-in rounded-sm border border-gold/30 bg-zinc-950 p-8 text-center">
-        <h2 className="font-display text-3xl text-white">
-          Application Received
+      <div className="animate-fade-in rounded-sm border border-gold/30 bg-zinc-950 p-6 text-center sm:p-8">
+        <h2 className="font-display text-2xl text-white sm:text-3xl">
+          {t.financing.successTitle}
         </h2>
-        <p className="mt-4 text-zinc-400">
-          Thank you. A Bella Roca team member will review your information and
-          contact you shortly.
+        <p className="mt-4 text-sm text-zinc-400 sm:text-base">
+          {t.financing.successBody}
         </p>
       </div>
     );
@@ -103,10 +105,12 @@ export function FinancingForm() {
   return (
     <form onSubmit={handleSubmit} className="space-y-8">
       <section className="space-y-5">
-        <h2 className="font-display text-2xl text-white">Your Information</h2>
+        <h2 className="font-display text-xl text-white sm:text-2xl">
+          {t.financing.yourInfo}
+        </h2>
 
         <div>
-          <label htmlFor="fullName">Name</label>
+          <label htmlFor="fullName">{t.financing.name}</label>
           <input
             id="fullName"
             name="fullName"
@@ -117,17 +121,18 @@ export function FinancingForm() {
         </div>
 
         <div>
-          <label htmlFor="socialSecurity">Full Social Security Number</label>
+          <label htmlFor="socialSecurity">{t.financing.ssn}</label>
           <MaskedSsnInput
             id="socialSecurity"
             value={form.socialSecurity}
             onChange={(digits) => updateField("socialSecurity", digits)}
+            hint={t.financing.ssnHint}
             required
           />
         </div>
 
         <div>
-          <label htmlFor="dateOfBirth">Date of Birth</label>
+          <label htmlFor="dateOfBirth">{t.financing.dob}</label>
           <input
             id="dateOfBirth"
             name="dateOfBirth"
@@ -139,7 +144,7 @@ export function FinancingForm() {
         </div>
 
         <div>
-          <label htmlFor="address">Address</label>
+          <label htmlFor="address">{t.financing.address}</label>
           <input
             id="address"
             name="address"
@@ -150,7 +155,7 @@ export function FinancingForm() {
         </div>
 
         <div>
-          <label htmlFor="email">Email Address</label>
+          <label htmlFor="email">{t.financing.email}</label>
           <input
             id="email"
             name="email"
@@ -162,7 +167,7 @@ export function FinancingForm() {
         </div>
 
         <div>
-          <label htmlFor="phone">Phone Number</label>
+          <label htmlFor="phone">{t.financing.phone}</label>
           <input
             id="phone"
             name="phone"
@@ -175,17 +180,19 @@ export function FinancingForm() {
       </section>
 
       <section className="space-y-5">
-        <h2 className="font-display text-2xl text-white">Project Details</h2>
+        <h2 className="font-display text-xl text-white sm:text-2xl">
+          {t.financing.projectDetails}
+        </h2>
 
         <fieldset>
           <legend className="mb-3 text-sm tracking-wide text-zinc-300">
-            Existing homeowner?
+            {t.financing.homeowner}
           </legend>
           <div className="flex gap-6">
             {(["yes", "no"] as const).map((value) => (
               <label
                 key={value}
-                className="flex cursor-pointer items-center gap-2 text-sm text-zinc-300"
+                className="flex min-h-[44px] cursor-pointer items-center gap-2 text-sm text-zinc-300"
               >
                 <input
                   type="radio"
@@ -194,9 +201,9 @@ export function FinancingForm() {
                   required
                   checked={form.existingHomeowner === value}
                   onChange={() => updateField("existingHomeowner", value)}
-                  className="h-4 w-4 accent-gold"
+                  className="h-5 w-5 accent-gold"
                 />
-                {value === "yes" ? "Yes" : "No"}
+                {value === "yes" ? t.financing.yes : t.financing.no}
               </label>
             ))}
           </div>
@@ -204,14 +211,14 @@ export function FinancingForm() {
 
         <fieldset>
           <legend className="mb-3 text-sm tracking-wide text-zinc-300">
-            Type of work needed?
+            {t.financing.workType}
           </legend>
           <div className="grid gap-3 sm:grid-cols-3">
-            {workTypes.map((type) => (
+            {workTypeKeys.map((key) => (
               <label
-                key={type.value}
-                className={`flex cursor-pointer items-center gap-2 rounded-sm border px-4 py-3 text-sm text-zinc-300 transition ${
-                  form.workType === type.value
+                key={key}
+                className={`flex min-h-[48px] cursor-pointer items-center gap-2 rounded-sm border px-4 py-3 text-sm text-zinc-300 transition ${
+                  form.workType === key
                     ? "border-gold bg-gold/10"
                     : "border-zinc-700"
                 }`}
@@ -219,36 +226,34 @@ export function FinancingForm() {
                 <input
                   type="radio"
                   name="workType"
-                  value={type.value}
+                  value={key}
                   required
-                  checked={form.workType === type.value}
-                  onChange={() => updateField("workType", type.value)}
-                  className="h-4 w-4 accent-gold"
+                  checked={form.workType === key}
+                  onChange={() => updateField("workType", key)}
+                  className="h-5 w-5 accent-gold"
                 />
-                {type.label}
+                {t.financing.workTypes[key]}
               </label>
             ))}
           </div>
         </fieldset>
       </section>
 
-      <section className="rounded-sm border border-gold/25 bg-zinc-950 p-5">
+      <section className="rounded-sm border border-gold/25 bg-zinc-950 p-4 sm:p-5">
         <label className="flex cursor-pointer items-start gap-3">
           <input
             type="checkbox"
             checked={termsAccepted}
             onChange={(e) => setTermsAccepted(e.target.checked)}
-            className="mt-1 h-4 w-4 shrink-0 accent-gold"
+            className="mt-1 h-5 w-5 shrink-0 accent-gold"
             required
           />
           <span className="text-sm leading-relaxed text-zinc-300">
-            I confirm that I am the owner of the information provided, or am
-            authorized to submit it, and I accept the{" "}
+            {t.financing.termsBefore}{" "}
             <Link href="/terms" className="text-gold underline hover:text-gold-light">
-              Terms &amp; Authorization
+              {t.financing.termsLink}
             </Link>
-            . I authorize Bella Roca General Contractors and its owners to
-            receive my application for financing review.
+            {t.financing.termsAfter}
           </span>
         </label>
       </section>
@@ -261,10 +266,10 @@ export function FinancingForm() {
 
       <button
         type="submit"
-        className="btn-primary w-full sm:w-auto disabled:cursor-not-allowed disabled:opacity-50"
+        className="btn-primary w-full disabled:cursor-not-allowed disabled:opacity-50 sm:w-auto"
         disabled={!canSubmit || submitting}
       >
-        {submitting ? "Submitting…" : "Submit Application"}
+        {submitting ? t.financing.submitting : t.financing.submit}
       </button>
     </form>
   );

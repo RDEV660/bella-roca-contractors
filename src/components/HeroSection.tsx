@@ -3,11 +3,13 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
+import { useLocale } from "@/components/LocaleProvider";
 import { SocialLinks } from "@/components/SocialLinks";
 import { projectImages } from "@/lib/projects";
 import { site } from "@/lib/site";
 
 export function HeroSection() {
+  const { t } = useLocale();
   const [index, setIndex] = useState(0);
   const timerRef = useRef<ReturnType<typeof setInterval> | null>(null);
   const total = projectImages.length;
@@ -36,7 +38,7 @@ export function HeroSection() {
   return (
     <section
       id="projects"
-      className="relative flex min-h-screen items-center overflow-hidden"
+      className="relative flex min-h-[100dvh] items-center overflow-hidden"
     >
       <div className="absolute inset-0">
         {projectImages.map((image, i) => (
@@ -55,42 +57,51 @@ export function HeroSection() {
         ))}
       </div>
 
-      <div className="absolute inset-0 bg-black/45" />
-      <div className="absolute inset-0 bg-gradient-to-r from-black/85 via-black/55 to-black/25" />
-      <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-black/50" />
+      <div className="absolute inset-0 bg-black/50" />
+      <div className="absolute inset-0 bg-gradient-to-r from-black/90 via-black/65 to-black/35" />
+      <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-transparent to-black/55" />
 
-      <div className="relative z-10 mx-auto w-full max-w-6xl px-6 py-32 md:py-40">
+      <div className="relative z-10 mx-auto w-full max-w-6xl px-4 py-28 sm:px-6 sm:py-32 md:py-40">
         <div className="max-w-2xl animate-fade-in">
-          <p className="mb-4 text-sm tracking-[0.35em] text-gold uppercase drop-shadow-sm">
-            {site.serviceArea}
+          <p className="mb-3 text-xs tracking-[0.25em] text-gold uppercase drop-shadow-sm sm:mb-4 sm:text-sm sm:tracking-[0.35em]">
+            {t.hero.serviceArea}
           </p>
-          <h1 className="font-display text-5xl leading-tight font-semibold text-white drop-shadow-lg md:text-7xl">
+          <h1 className="font-display text-4xl leading-tight font-semibold text-white drop-shadow-lg sm:text-5xl md:text-7xl">
             <span className="gold-gradient">Bella Roca</span>
             <br />
-            General Contractors
+            {t.hero.tagline}
           </h1>
-          <p className="mt-3 text-sm tracking-[0.3em] text-zinc-200 uppercase drop-shadow">
-            Roofing &amp; Construction
+          <p className="mt-2 text-xs tracking-[0.2em] text-zinc-200 uppercase drop-shadow sm:mt-3 sm:text-sm sm:tracking-[0.3em]">
+            {t.hero.subtitle}
           </p>
-          <p className="mt-6 max-w-lg text-base leading-relaxed text-zinc-200/95 drop-shadow">
-            {site.description}
+          <p className="mt-4 max-w-lg text-sm leading-relaxed text-zinc-200/95 drop-shadow sm:mt-6 sm:text-base">
+            {t.hero.description}
           </p>
-          <div className="mt-10 flex flex-wrap items-center gap-4">
-            <a href={site.phoneHref} className="btn-primary shadow-lg">
-              Call {site.phone}
+          <div className="mt-8 flex flex-col gap-3 sm:mt-10 sm:flex-row sm:flex-wrap sm:items-center">
+            <a
+              href={site.phoneHref}
+              className="btn-primary w-full text-center shadow-lg sm:w-auto"
+            >
+              {t.hero.call} {site.phone}
             </a>
-            <Link href="/financing" className="btn-outline border-white/40 bg-black/20 text-white backdrop-blur-sm hover:border-gold hover:bg-gold/10 hover:text-gold">
-              Apply for Financing
+            <Link
+              href="/financing"
+              className="btn-outline w-full border-white/40 bg-black/25 text-center text-white backdrop-blur-sm hover:border-gold hover:bg-gold/10 hover:text-gold sm:w-auto"
+            >
+              {t.hero.applyFinancing}
             </Link>
-            <Link href="/gallery" className="btn-outline border-white/40 bg-black/20 text-white backdrop-blur-sm hover:border-gold hover:bg-gold/10 hover:text-gold">
-              View Gallery
+            <Link
+              href="/gallery"
+              className="btn-outline w-full border-white/40 bg-black/25 text-center text-white backdrop-blur-sm hover:border-gold hover:bg-gold/10 hover:text-gold sm:w-auto"
+            >
+              {t.hero.viewGallery}
             </Link>
           </div>
-          <SocialLinks className="mt-8" />
+          <SocialLinks className="mt-6 sm:mt-8" />
         </div>
       </div>
 
-      <div className="absolute bottom-8 left-1/2 z-10 flex -translate-x-1/2 gap-2">
+      <div className="absolute bottom-6 left-1/2 z-10 flex max-w-[90vw] -translate-x-1/2 flex-wrap justify-center gap-1.5 sm:bottom-8 sm:gap-2">
         {projectImages.map((_, i) => (
           <button
             key={i}
@@ -101,10 +112,10 @@ export function HeroSection() {
             }}
             className={`rounded-full transition-all duration-500 ease-out ${
               i === index
-                ? "h-1.5 w-7 bg-gold"
-                : "h-1.5 w-1.5 bg-white/35 hover:bg-gold/60"
+                ? "h-2 w-7 bg-gold sm:h-1.5"
+                : "h-2 w-2 bg-white/35 hover:bg-gold/60 sm:h-1.5"
             }`}
-            aria-label={`Go to slide ${i + 1}`}
+            aria-label={`${t.hero.slide} ${i + 1}`}
           />
         ))}
       </div>

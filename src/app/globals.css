@@ -55,13 +55,13 @@ body {
 }
 
 .section-padding {
-  @apply px-6 py-20 md:py-28;
+  @apply px-4 py-16 sm:px-6 sm:py-20 md:py-28;
 }
 
 input,
 select,
 textarea {
-  @apply w-full rounded-sm border border-zinc-700 bg-zinc-900 px-4 py-3 text-sm text-white outline-none transition placeholder:text-zinc-500 focus:border-gold focus:ring-1 focus:ring-gold/40;
+  @apply w-full rounded-sm border border-zinc-700 bg-zinc-900 px-4 py-3 text-base text-white outline-none transition placeholder:text-zinc-500 focus:border-gold focus:ring-1 focus:ring-gold/40 sm:text-sm;
 }
 
 label {
@@ -73,11 +73,11 @@ label {
 }
 
 .btn-primary {
-  @apply inline-flex items-center justify-center rounded-sm border border-gold bg-gold px-6 py-3 text-sm font-semibold tracking-wide text-black uppercase transition hover:bg-gold-light;
+  @apply inline-flex min-h-[48px] items-center justify-center rounded-sm border border-gold bg-gold px-6 py-3 text-sm font-semibold tracking-wide text-black uppercase transition hover:bg-gold-light;
 }
 
 .btn-outline {
-  @apply inline-flex items-center justify-center rounded-sm border border-gold/50 px-6 py-3 text-sm font-semibold tracking-wide text-gold uppercase transition hover:border-gold hover:bg-gold/10;
+  @apply inline-flex min-h-[48px] items-center justify-center rounded-sm border border-gold/50 px-6 py-3 text-sm font-semibold tracking-wide text-gold uppercase transition hover:border-gold hover:bg-gold/10;
 }
 
 @keyframes fade-in {

@@ -7,6 +7,7 @@ type MaskedSsnInputProps = {
   id: string;
   value: string;
   onChange: (digits: string) => void;
+  hint: string;
   required?: boolean;
 };
 
@@ -14,6 +15,7 @@ export function MaskedSsnInput({
   id,
   value,
   onChange,
+  hint,
   required,
 }: MaskedSsnInputProps) {
   const inputRef = useRef<HTMLInputElement>(null);
@@ -43,11 +45,9 @@ export function MaskedSsnInput({
         }}
         className="font-mono tracking-widest"
         aria-describedby={`${id}-hint`}
-        aria-label="Social Security Number"
       />
       <p id={`${id}-hint`} className="field-hint">
-        Your SSN is masked on screen and transmitted securely. Only authorized
-        Bella Roca owners receive the full number for application review.
+        {hint}
       </p>
     </div>
   );
