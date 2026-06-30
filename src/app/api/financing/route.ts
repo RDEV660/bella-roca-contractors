@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { formatSsnFull } from "@/lib/ssn";
+import { sendFinancingNotification } from "@/lib/send-financing-notification";
 
 type FinancingPayload = {
   fullName: string;
@@ -46,22 +46,30 @@ export async function POST(request: Request) {
     );
   }
 
-  // Owners receive full SSN; only non-sensitive fields are logged here.
-  const ownerRecord = {
-    fullName: body.fullName,
-    socialSecurityFull: formatSsnFull(body.socialSecurity),
+  const application = {
+    fullName: body.fullName.trim(),
+    socialSecurity: body.socialSecurity,
     dateOfBirth: body.dateOfBirth,
-    address: body.address,
-    email: body.email,
-    phone: body.phone,
+    address: body.address.trim(),
+    email: body.email.trim(),
+    phone: body.phone.trim(),
     existingHomeowner: body.existingHomeowner,
     workType: body.workType,
     submittedAt: new Date().toISOString(),
   };
 
-  // TODO: Wire to secure email/webhook/CRM for owner delivery.
-  if (process.env.NODE_ENV === "development") {
-    console.info("[financing] Application received for:", ownerRecord.fullName);
+  try {
+    await sendFinancingNotification(application);
+  } catch (error) {
+    console.error("[financing] Email delivery failed:", error);
+
+    return NextResponse.json(
+      {
+        error:
+          "Your application could not be delivered. Please call us directly.",
+      },
+      { status: 503 },
+    );
   }
 
   return NextResponse.json({ success: true });
