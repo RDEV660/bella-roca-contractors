@@ -1,9 +1,9 @@
 "use client";
 
+import Link from "next/link";
 import { FormEvent, useState } from "react";
 import { MaskedSsnInput } from "@/components/MaskedSsnInput";
 import { workTypes } from "@/lib/site";
-import { formatSsnFull } from "@/lib/ssn";
 
 type FormState = {
   fullName: string;
@@ -16,7 +16,7 @@ type FormState = {
   workType: string;
 };
 
-const initialState: FormState = {
+const emptyForm: FormState = {
   fullName: "",
   socialSecurity: "",
   dateOfBirth: "",
@@ -28,44 +28,77 @@ const initialState: FormState = {
 };
 
 export function FinancingForm() {
-  const [form, setForm] = useState<FormState>(initialState);
+  const [form, setForm] = useState<FormState>(emptyForm);
+  const [termsAccepted, setTermsAccepted] = useState(false);
   const [submitted, setSubmitted] = useState(false);
+  const [submitting, setSubmitting] = useState(false);
+  const [error, setError] = useState("");
 
   function updateField<K extends keyof FormState>(key: K, value: FormState[K]) {
     setForm((prev) => ({ ...prev, [key]: value }));
   }
 
-  function handleSubmit(event: FormEvent<HTMLFormElement>) {
+  async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
+    setError("");
 
-    if (form.socialSecurity.length !== 9) {
+    if (!termsAccepted) {
+      setError("You must accept the terms before submitting.");
       return;
     }
 
-    // Full SSN is sent to owners unblurred when a backend is connected.
-    const ownerPayload = {
-      ...form,
-      socialSecurityFull: formatSsnFull(form.socialSecurity),
-      socialSecurityMasked: formatSsnFull(form.socialSecurity).replace(/\d/g, "#"),
-    };
+    if (form.socialSecurity.length !== 9) {
+      setError("Please enter a valid 9-digit Social Security number.");
+      return;
+    }
 
-    void ownerPayload;
-    setSubmitted(true);
+    setSubmitting(true);
+
+    try {
+      const response = await fetch("/api/financing", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          ...form,
+          termsAccepted: true,
+        }),
+      });
+
+      if (!response.ok) {
+        throw new Error("Submission failed.");
+      }
+
+      setSubmitted(true);
+      setForm(emptyForm);
+      setTermsAccepted(false);
+    } catch {
+      setError(
+        "We could not submit your application. Please call us or try again.",
+      );
+    } finally {
+      setSubmitting(false);
+    }
   }
 
   if (submitted) {
     return (
-      <div className="rounded-sm border border-gold/30 bg-zinc-950 p-8 text-center">
+      <div className="animate-fade-in rounded-sm border border-gold/30 bg-zinc-950 p-8 text-center">
         <h2 className="font-display text-3xl text-white">
           Application Received
         </h2>
         <p className="mt-4 text-zinc-400">
-          Thank you, {form.fullName}. A Bella Roca team member will review your
-          information and contact you shortly.
+          Thank you. A Bella Roca team member will review your information and
+          contact you shortly.
         </p>
       </div>
     );
   }
+
+  const canSubmit =
+    termsAccepted &&
+    form.socialSecurity.length === 9 &&
+    form.existingHomeowner !== "" &&
+    form.workType !== "";
 
   return (
     <form onSubmit={handleSubmit} className="space-y-8">
@@ -87,10 +120,9 @@ export function FinancingForm() {
           <label htmlFor="socialSecurity">Full Social Security Number</label>
           <MaskedSsnInput
             id="socialSecurity"
-            name="socialSecurity"
-            required
             value={form.socialSecurity}
             onChange={(digits) => updateField("socialSecurity", digits)}
+            required
           />
         </div>
 
@@ -200,18 +232,39 @@ export function FinancingForm() {
         </fieldset>
       </section>
 
-      <p className="text-xs leading-relaxed text-zinc-500">
-        By submitting, you authorize Bella Roca General Contractors to review
-        your financing application. Sensitive information is masked for you and
-        delivered unblurred to the owners for processing.
-      </p>
+      <section className="rounded-sm border border-gold/25 bg-zinc-950 p-5">
+        <label className="flex cursor-pointer items-start gap-3">
+          <input
+            type="checkbox"
+            checked={termsAccepted}
+            onChange={(e) => setTermsAccepted(e.target.checked)}
+            className="mt-1 h-4 w-4 shrink-0 accent-gold"
+            required
+          />
+          <span className="text-sm leading-relaxed text-zinc-300">
+            I confirm that I am the owner of the information provided, or am
+            authorized to submit it, and I accept the{" "}
+            <Link href="/terms" className="text-gold underline hover:text-gold-light">
+              Terms &amp; Authorization
+            </Link>
+            . I authorize Bella Roca General Contractors and its owners to
+            receive my application for financing review.
+          </span>
+        </label>
+      </section>
+
+      {error && (
+        <p className="text-sm text-red-400" role="alert">
+          {error}
+        </p>
+      )}
 
       <button
         type="submit"
-        className="btn-primary w-full sm:w-auto"
-        disabled={form.socialSecurity.length !== 9}
+        className="btn-primary w-full sm:w-auto disabled:cursor-not-allowed disabled:opacity-50"
+        disabled={!canSubmit || submitting}
       >
-        Submit Application
+        {submitting ? "Submitting…" : "Submit Application"}
       </button>
     </form>
   );

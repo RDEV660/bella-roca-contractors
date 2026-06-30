@@ -7,8 +7,9 @@ import { site } from "@/lib/site";
 
 const navLinks = [
   { href: "/", label: "Home" },
+  { href: "/#projects", label: "Projects" },
+  { href: "/gallery", label: "Gallery" },
   { href: "/#services", label: "Services" },
-  { href: "/#about", label: "About" },
   { href: "/financing", label: "Financing" },
   { href: "/#contact", label: "Contact" },
 ];
@@ -23,12 +24,12 @@ export function Header() {
           <Logo />
         </Link>
 
-        <nav className="hidden items-center gap-8 md:flex">
+        <nav className="hidden items-center gap-6 lg:flex">
           {navLinks.map((link) => {
             const isActive =
               link.href === "/"
                 ? pathname === "/"
-                : pathname === link.href || link.href.startsWith(pathname + "");
+                : pathname === link.href;
 
             return (
               <Link

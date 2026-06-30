@@ -17,8 +17,12 @@ export default function FinancingPage() {
         Financing Application
       </h1>
       <p className="mt-4 text-zinc-400">
-        Complete the form below to begin your financing application. Our team
-        will review your submission and reach out at{" "}
+        Complete the form below to begin your financing application. You must
+        accept our{" "}
+        <a href="/terms" className="text-gold hover:underline">
+          Terms &amp; Authorization
+        </a>{" "}
+        before submitting. Questions? Call{" "}
         <a href={site.phoneHref} className="text-gold hover:underline">
           {site.phone}
         </a>

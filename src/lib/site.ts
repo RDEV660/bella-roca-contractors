@@ -16,6 +16,13 @@ export const site = {
   experience: "30+ years",
   description:
     "Family-owned general contractors with 30+ years of experience. Residential, commercial, and industrial — renovations and new construction across the RGV.",
+  socials: [
+    {
+      name: "Facebook",
+      href: "https://www.facebook.com/bellarocaconstructionllc/",
+      label: "Follow us on Facebook",
+    },
+  ],
 } as const;
 
 export const services = [
