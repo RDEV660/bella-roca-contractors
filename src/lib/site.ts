@@ -23,6 +23,8 @@ export const site = {
       label: "Follow us on Facebook",
     },
   ],
+  siteUrl:
+    process.env.NEXT_PUBLIC_SITE_URL ?? "https://bella-roca-contractors.vercel.app",
 } as const;
 
 export const services = [

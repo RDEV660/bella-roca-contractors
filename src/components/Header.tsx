@@ -18,7 +18,13 @@ export function Header() {
   const pathname = usePathname();
 
   return (
-    <header className="sticky top-0 z-50 border-b border-gold/20 bg-black/90 backdrop-blur-md">
+    <header
+      className={`sticky top-0 z-50 backdrop-blur-md ${
+        pathname === "/"
+          ? "border-b border-white/10 bg-black/30"
+          : "border-b border-gold/20 bg-black/90"
+      }`}
+    >
       <div className="mx-auto flex max-w-6xl items-center justify-between gap-6 px-6 py-4">
         <Link href="/" aria-label="Bella Roca home">
           <Logo />

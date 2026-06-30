@@ -108,3 +108,18 @@ label {
   background-size: 200% auto;
   animation: shimmer 4s linear infinite;
 }
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
+  .animate-fade-in,
+  .animate-shimmer {
+    animation: none;
+  }
+
+  * {
+    transition-duration: 0.01ms !important;
+  }
+}

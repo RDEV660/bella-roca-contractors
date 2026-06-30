@@ -1,44 +1,13 @@
 import Link from "next/link";
 import { AnimateOnScroll } from "@/components/AnimateOnScroll";
-import { ProjectSlideshow } from "@/components/ProjectSlideshow";
+import { HeroSection } from "@/components/HeroSection";
 import { SocialLinks } from "@/components/SocialLinks";
 import { services, site } from "@/lib/site";
 
 export default function HomePage() {
   return (
     <>
-      <section className="relative overflow-hidden border-b border-gold/20">
-        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,_rgba(201,169,98,0.12),_transparent_55%)]" />
-        <div className="section-padding relative mx-auto grid max-w-6xl items-center gap-12 lg:grid-cols-2">
-          <div className="animate-fade-in">
-            <p className="mb-4 text-sm tracking-[0.35em] text-gold uppercase">
-              {site.serviceArea}
-            </p>
-            <h1 className="font-display text-5xl leading-tight font-semibold text-white md:text-6xl">
-              <span className="gold-gradient">Bella Roca</span>
-              <br />
-              General Contractors
-            </h1>
-            <p className="mt-2 text-sm tracking-[0.3em] text-zinc-400 uppercase">
-              Roofing &amp; Construction
-            </p>
-            <p className="mt-6 max-w-lg text-base leading-relaxed text-zinc-300">
-              {site.description}
-            </p>
-            <div className="mt-8 flex flex-wrap items-center gap-4">
-              <a href={site.phoneHref} className="btn-primary">
-                Call {site.phone}
-              </a>
-              <Link href="/financing" className="btn-outline">
-                Apply for Financing
-              </Link>
-            </div>
-            <SocialLinks className="mt-8" />
-          </div>
-
-          <ProjectSlideshow variant="hero" />
-        </div>
-      </section>
+      <HeroSection />
 
       <section id="about" className="section-padding mx-auto max-w-6xl">
         <AnimateOnScroll>

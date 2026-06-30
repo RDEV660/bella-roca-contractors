@@ -17,9 +17,50 @@ const body = Montserrat({
   weight: ["300", "400", "500", "600"],
 });
 
+const title = `${site.name} | ${site.tagline} — ${site.subtitle}`;
+
 export const metadata: Metadata = {
-  title: `${site.name} | ${site.tagline} — ${site.subtitle}`,
+  metadataBase: new URL(site.siteUrl),
+  title: {
+    default: title,
+    template: `%s | ${site.name}`,
+  },
   description: site.description,
+  keywords: [
+    "general contractor",
+    "Bella Roca",
+    "Rio Grande Valley",
+    "RGV",
+    "South Texas",
+    "roofing",
+    "new construction",
+    "renovations",
+    "Alton TX",
+  ],
+  openGraph: {
+    type: "website",
+    locale: "en_US",
+    url: site.siteUrl,
+    siteName: `${site.name} ${site.tagline}`,
+    title,
+    description: site.description,
+    images: [
+      {
+        url: "/projects/project-02.png",
+        width: 1024,
+        height: 769,
+        alt: "Bella Roca General Contractors project showcase",
+      },
+    ],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title,
+    description: site.description,
+    images: ["/projects/project-02.png"],
+  },
+  robots: { index: true, follow: true },
+  icons: { icon: "/logo.svg", apple: "/logo.svg" },
 };
 
 export default function RootLayout({
@@ -28,7 +69,11 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className={`${display.variable} ${body.variable} h-full`}>
+    <html
+      lang="en"
+      data-scroll-behavior="smooth"
+      className={`${display.variable} ${body.variable} h-full`}
+    >
       <body className="flex min-h-full flex-col antialiased">
         <Header />
         <main className="flex-1">{children}</main>
