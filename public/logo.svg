@@ -1,0 +1,22 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 500" fill="none">
+  <rect width="400" height="500" fill="#050505"/>
+  <!-- Roof -->
+  <path d="M80 90 L200 30 L320 90" stroke="#C9A962" stroke-width="6" fill="none" stroke-linejoin="round"/>
+  <rect x="182" y="72" width="36" height="28" stroke="#C9A962" stroke-width="3" fill="none"/>
+  <line x1="200" y1="72" x2="200" y2="100" stroke="#C9A962" stroke-width="2"/>
+  <line x1="182" y1="86" x2="218" y2="86" stroke="#C9A962" stroke-width="2"/>
+  <!-- BR Monogram -->
+  <text x="200" y="230" text-anchor="middle" font-family="Georgia, serif" font-size="120" font-weight="600" fill="#C9A962">BR</text>
+  <!-- Bella Roca -->
+  <text x="200" y="300" text-anchor="middle" font-family="Georgia, serif" font-size="42" font-weight="600" fill="#FFFFFF" letter-spacing="8">BELLA ROCA</text>
+  <!-- General Contractors -->
+  <line x1="60" y1="330" x2="130" y2="330" stroke="#C9A962" stroke-width="2"/>
+  <text x="200" y="338" text-anchor="middle" font-family="Arial, sans-serif" font-size="16" fill="#C9A962" letter-spacing="4">GENERAL CONTRACTORS</text>
+  <line x1="270" y1="330" x2="340" y2="330" stroke="#C9A962" stroke-width="2"/>
+  <!-- Divider -->
+  <line x1="50" y1="365" x2="350" y2="365" stroke="#C9A962" stroke-width="2"/>
+  <!-- Roofing & Construction -->
+  <line x1="50" y1="400" x2="110" y2="400" stroke="#C9A962" stroke-width="2"/>
+  <text x="200" y="408" text-anchor="middle" font-family="Arial, sans-serif" font-size="15" fill="#FFFFFF" letter-spacing="3">ROOFING &amp; CONSTRUCTION</text>
+  <line x1="290" y1="400" x2="350" y2="400" stroke="#C9A962" stroke-width="2"/>
+</svg>
