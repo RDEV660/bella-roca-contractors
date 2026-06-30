@@ -5,11 +5,14 @@ import {
   type FinancingApplication,
 } from "@/lib/financing-email";
 
-const DEFAULT_NOTIFY_EMAIL = "Bellarocageneralcontractors@gmail.com";
-const DEFAULT_FROM_EMAIL = "Bella Roca Applications <onboarding@resend.dev>";
+const DEFAULT_NOTIFY_EMAIL = "bellarocageneralcontractors@gmail.com";
+const DEFAULT_FROM_EMAIL = "onboarding@resend.dev";
 
 function notifyEmail() {
-  return process.env.FINANCING_NOTIFY_EMAIL?.trim() || DEFAULT_NOTIFY_EMAIL;
+  return (
+    process.env.FINANCING_NOTIFY_EMAIL?.trim().toLowerCase() ||
+    DEFAULT_NOTIFY_EMAIL
+  );
 }
 
 async function sendViaResend(application: FinancingApplication) {
@@ -24,9 +27,9 @@ async function sendViaResend(application: FinancingApplication) {
   const resend = new Resend(apiKey);
 
   const { error } = await resend.emails.send({
-    from,
+    from: from.includes("@") ? from : `Bella Roca Applications <${from}>`,
     to: [notifyEmail()],
-    replyTo: application.email,
+    replyTo: application.email.trim().toLowerCase(),
     subject,
     text,
     html,
