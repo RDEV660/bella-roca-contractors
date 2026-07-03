@@ -22,9 +22,10 @@ const CATEGORY_OPTIONS: { value: GalleryImage["category"]; label: string }[] = [
 type Props = {
   images: GalleryImage[];
   blobReady: boolean;
+  storageError?: boolean;
 };
 
-export function AdminDashboard({ images, blobReady }: Props) {
+export function AdminDashboard({ images, blobReady, storageError }: Props) {
   const router = useRouter();
   const fileRef = useRef<HTMLInputElement>(null);
   const [category, setCategory] =
@@ -116,11 +117,19 @@ export function AdminDashboard({ images, blobReady }: Props) {
         </form>
       </div>
 
-      {!blobReady && (
-        <div className="mt-6 rounded-sm border border-yellow-500/40 bg-yellow-500/10 p-4 text-sm text-yellow-200">
-          Photo storage is not connected yet. Ask your developer to finish the
-          one-time setup (Vercel Blob) so uploads can be saved.
+      {storageError ? (
+        <div className="mt-6 rounded-sm border border-red-500/40 bg-red-500/10 p-4 text-sm text-red-200">
+          Photo storage is connected but returned an error. Make sure the Vercel
+          Blob store is connected to the Production environment, then redeploy
+          the site. The website is still showing the current photos below.
         </div>
+      ) : (
+        !blobReady && (
+          <div className="mt-6 rounded-sm border border-yellow-500/40 bg-yellow-500/10 p-4 text-sm text-yellow-200">
+            Photo storage is not connected yet. Ask your developer to finish the
+            one-time setup (Vercel Blob) so uploads can be saved.
+          </div>
+        )
       )}
 
       <section className="mt-8 rounded-sm border border-gold/25 bg-zinc-950 p-5 sm:p-6">

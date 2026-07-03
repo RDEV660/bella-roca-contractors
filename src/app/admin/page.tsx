@@ -3,7 +3,7 @@ import { AdminLogin } from "@/components/admin/AdminLogin";
 import { AdminDashboard } from "@/components/admin/AdminDashboard";
 import { isAdmin, isAdminEnabled } from "@/lib/admin-auth";
 import { getManagedImages, isBlobConfigured } from "@/lib/gallery-store";
-import { projectImages } from "@/lib/projects";
+import { projectImages, type GalleryImage } from "@/lib/projects";
 
 export const metadata: Metadata = {
   title: "Photo Manager",
@@ -11,6 +11,16 @@ export const metadata: Metadata = {
 };
 
 export const dynamic = "force-dynamic";
+
+function defaultImages(): GalleryImage[] {
+  return projectImages.map((image) => ({
+    id: image.src,
+    src: image.src,
+    alt: image.alt,
+    category: image.category,
+    uploaded: false,
+  }));
+}
 
 export default async function AdminPage() {
   if (!isAdminEnabled()) {
@@ -29,16 +39,23 @@ export default async function AdminPage() {
     return <AdminLogin />;
   }
 
-  const blobReady = isBlobConfigured();
-  const images = blobReady
-    ? await getManagedImages()
-    : projectImages.map((image) => ({
-        id: image.src,
-        src: image.src,
-        alt: image.alt,
-        category: image.category,
-        uploaded: false as const,
-      }));
+  const blobConfigured = isBlobConfigured();
+  let images = defaultImages();
+  let storageError = false;
 
-  return <AdminDashboard images={images} blobReady={blobReady} />;
+  if (blobConfigured) {
+    try {
+      images = await getManagedImages();
+    } catch {
+      storageError = true;
+    }
+  }
+
+  return (
+    <AdminDashboard
+      images={images}
+      blobReady={blobConfigured && !storageError}
+      storageError={storageError}
+    />
+  );
 }
