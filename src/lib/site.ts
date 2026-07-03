@@ -22,6 +22,16 @@ export const site = {
       href: "https://www.facebook.com/bellarocaconstructionllc/",
       label: "Follow us on Facebook",
     },
+    {
+      name: "Instagram",
+      href: "https://www.instagram.com/bellarocaconstruction/",
+      label: "Follow us on Instagram",
+    },
+    {
+      name: "TikTok",
+      href: "https://www.tiktok.com/@bellarocaconstruc",
+      label: "Follow us on TikTok",
+    },
   ],
   siteUrl:
     process.env.NEXT_PUBLIC_SITE_URL ?? "https://bella-roca-contractors.vercel.app",

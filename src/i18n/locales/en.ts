@@ -91,6 +91,7 @@ export const en = {
     financingApp: "Financing Application",
     terms: "Terms & Authorization",
     followUs: "Follow Us",
+    ownerSignIn: "Owner Sign-In",
     rights: "All rights reserved.",
   },
   gallery: {

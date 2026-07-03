@@ -94,6 +94,7 @@ export const es = {
     financingApp: "Solicitud de Financiamiento",
     terms: "Términos y Autorización",
     followUs: "Síguenos",
+    ownerSignIn: "Acceso del Propietario",
     rights: "Todos los derechos reservados.",
   },
   gallery: {
