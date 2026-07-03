@@ -1,4 +1,5 @@
 import { GalleryPageContent } from "@/components/GalleryPageContent";
+import { getGalleryImages } from "@/lib/gallery-store";
 import { site } from "@/lib/site";
 
 export const metadata = {
@@ -7,6 +8,9 @@ export const metadata = {
     "Browse completed residential and commercial construction projects by Bella Roca General Contractors across the Rio Grande Valley.",
 };
 
-export default function GalleryPage() {
-  return <GalleryPageContent />;
+export const dynamic = "force-dynamic";
+
+export default async function GalleryPage() {
+  const images = await getGalleryImages();
+  return <GalleryPageContent images={images} />;
 }

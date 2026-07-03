@@ -3,7 +3,7 @@
 import { useState } from "react";
 import Image from "next/image";
 import { useLocale } from "@/components/LocaleProvider";
-import { ProjectImage, projectImages } from "@/lib/projects";
+import { GalleryImage } from "@/lib/projects";
 
 const categoryKeys = [
   "all",
@@ -14,16 +14,16 @@ const categoryKeys = [
   "renovation",
 ] as const;
 
-export function GalleryGrid() {
+export function GalleryGrid({ images }: { images: GalleryImage[] }) {
   const { t } = useLocale();
   const [filter, setFilter] =
     useState<(typeof categoryKeys)[number]>("all");
-  const [lightbox, setLightbox] = useState<ProjectImage | null>(null);
+  const [lightbox, setLightbox] = useState<GalleryImage | null>(null);
 
   const filtered =
     filter === "all"
-      ? projectImages
-      : projectImages.filter((img) => img.category === filter);
+      ? images
+      : images.filter((img) => img.category === filter);
 
   return (
     <>

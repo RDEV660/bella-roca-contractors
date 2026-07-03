@@ -2,8 +2,9 @@
 
 import { GalleryGrid } from "@/components/GalleryGrid";
 import { useLocale } from "@/components/LocaleProvider";
+import { GalleryImage } from "@/lib/projects";
 
-export function GalleryPageContent() {
+export function GalleryPageContent({ images }: { images: GalleryImage[] }) {
   const { t } = useLocale();
 
   return (
@@ -19,7 +20,7 @@ export function GalleryPageContent() {
       </p>
 
       <div className="mt-10 sm:mt-12">
-        <GalleryGrid />
+        <GalleryGrid images={images} />
       </div>
     </div>
   );

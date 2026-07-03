@@ -5,14 +5,14 @@ import Image from "next/image";
 import Link from "next/link";
 import { useLocale } from "@/components/LocaleProvider";
 import { SocialLinks } from "@/components/SocialLinks";
-import { projectImages } from "@/lib/projects";
+import { GalleryImage } from "@/lib/projects";
 import { site } from "@/lib/site";
 
-export function HeroSection() {
+export function HeroSection({ images }: { images: GalleryImage[] }) {
   const { t } = useLocale();
   const [index, setIndex] = useState(0);
   const timerRef = useRef<ReturnType<typeof setInterval> | null>(null);
-  const total = projectImages.length;
+  const total = images.length;
 
   const goTo = useCallback(
     (next: number) => {
@@ -23,6 +23,7 @@ export function HeroSection() {
 
   const resetTimer = useCallback(() => {
     if (timerRef.current) clearInterval(timerRef.current);
+    if (total <= 1) return;
     timerRef.current = setInterval(() => {
       setIndex((i) => (i + 1) % total);
     }, 7000);
@@ -41,7 +42,7 @@ export function HeroSection() {
       className="relative flex min-h-[100dvh] items-center overflow-hidden"
     >
       <div className="absolute inset-0">
-        {projectImages.map((image, i) => (
+        {images.map((image, i) => (
           <Image
             key={image.src}
             src={image.src}
@@ -102,7 +103,8 @@ export function HeroSection() {
       </div>
 
       <div className="absolute bottom-6 left-1/2 z-10 flex max-w-[90vw] -translate-x-1/2 flex-wrap justify-center gap-1.5 sm:bottom-8 sm:gap-2">
-        {projectImages.map((_, i) => (
+        {total > 1 &&
+          images.map((_, i) => (
           <button
             key={i}
             type="button"

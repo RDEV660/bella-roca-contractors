@@ -11,6 +11,15 @@ export type ProjectImage = {
   category: ProjectCategory;
 };
 
+export type GalleryImage = {
+  id: string;
+  src: string;
+  alt: string;
+  category: ProjectCategory;
+  /** true when stored in Vercel Blob (deletable file); false for bundled defaults. */
+  uploaded: boolean;
+};
+
 export const projectImages: ProjectImage[] = [
   {
     src: "/projects/project-02.png",
