@@ -23,9 +23,17 @@ type Props = {
   images: GalleryImage[];
   blobReady: boolean;
   storageError?: boolean;
+  storageErrorMessage?: string;
+  uploadAccess: "public" | "private";
 };
 
-export function AdminDashboard({ images, blobReady, storageError }: Props) {
+export function AdminDashboard({
+  images,
+  blobReady,
+  storageError,
+  storageErrorMessage,
+  uploadAccess,
+}: Props) {
   const router = useRouter();
   const fileRef = useRef<HTMLInputElement>(null);
   const [category, setCategory] =
@@ -50,7 +58,7 @@ export function AdminDashboard({ images, blobReady, storageError }: Props) {
     setUploading(true);
     try {
       const blob = await upload(`gallery/photos/${file.name}`, file, {
-        access: "public",
+        access: uploadAccess,
         handleUploadUrl: "/api/gallery/upload",
         contentType: file.type,
       });
@@ -119,9 +127,8 @@ export function AdminDashboard({ images, blobReady, storageError }: Props) {
 
       {storageError ? (
         <div className="mt-6 rounded-sm border border-red-500/40 bg-red-500/10 p-4 text-sm text-red-200">
-          Photo storage is connected but returned an error. Make sure the Vercel
-          Blob store is connected to the Production environment, then redeploy
-          the site. The website is still showing the current photos below.
+          {storageErrorMessage ||
+            "Photo storage is connected but returned an error. Make sure the Vercel Blob store is connected to the Production environment, then redeploy the site."}
         </div>
       ) : (
         !blobReady && (

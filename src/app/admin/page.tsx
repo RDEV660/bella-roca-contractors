@@ -2,7 +2,12 @@ import type { Metadata } from "next";
 import { AdminLogin } from "@/components/admin/AdminLogin";
 import { AdminDashboard } from "@/components/admin/AdminDashboard";
 import { isAdmin, isAdminEnabled } from "@/lib/admin-auth";
-import { getManagedImages, isBlobConfigured } from "@/lib/gallery-store";
+import {
+  explainBlobError,
+  getBlobUploadAccess,
+  getManagedImages,
+  isBlobConfigured,
+} from "@/lib/gallery-store";
 import { projectImages, type GalleryImage } from "@/lib/projects";
 
 export const metadata: Metadata = {
@@ -42,12 +47,14 @@ export default async function AdminPage() {
   const blobConfigured = isBlobConfigured();
   let images = defaultImages();
   let storageError = false;
+  let storageErrorMessage = "";
 
   if (blobConfigured) {
     try {
       images = await getManagedImages();
-    } catch {
+    } catch (error) {
       storageError = true;
+      storageErrorMessage = explainBlobError(error);
     }
   }
 
@@ -56,6 +63,8 @@ export default async function AdminPage() {
       images={images}
       blobReady={blobConfigured && !storageError}
       storageError={storageError}
+      storageErrorMessage={storageErrorMessage}
+      uploadAccess={getBlobUploadAccess()}
     />
   );
 }

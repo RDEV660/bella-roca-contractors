@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { handleUpload, type HandleUploadBody } from "@vercel/blob/client";
 import { isAdmin } from "@/lib/admin-auth";
+import { getBlobUploadAccess } from "@/lib/gallery-store";
 
 export async function POST(request: Request): Promise<NextResponse> {
   if (!(await isAdmin())) {
@@ -22,9 +23,8 @@ export async function POST(request: Request): Promise<NextResponse> {
         ],
         addRandomSuffix: true,
         maximumSizeInBytes: 15 * 1024 * 1024,
+        access: getBlobUploadAccess(),
       }),
-      // Fires from Vercel's servers in production. Manifest is updated
-      // client-side after upload, so nothing is required here.
       onUploadCompleted: async () => {},
     });
 
