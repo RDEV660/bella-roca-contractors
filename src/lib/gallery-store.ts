@@ -1,4 +1,5 @@
 import { get, head, list, put, del } from "@vercel/blob";
+import { isPrivateBlobUrl } from "@/lib/blob-url";
 import {
   projectImages,
   type GalleryImage,
@@ -16,9 +17,9 @@ export function isBlobConfigured() {
   return Boolean(process.env.BLOB_READ_WRITE_TOKEN?.trim());
 }
 
-function blobAccessFromEnv(): BlobAccess {
-  const value = process.env.BLOB_ACCESS?.trim().toLowerCase();
-  return value === "private" ? "private" : "public";
+/** Website photos must always be public so visitors can see them. */
+export function getBlobUploadAccess(): BlobAccess {
+  return "public";
 }
 
 export function explainBlobError(error: unknown): string {
@@ -102,19 +103,10 @@ async function readManifestViaList(): Promise<GalleryImage[] | null> {
 }
 
 async function readManifest(): Promise<GalleryImage[] | null> {
-  const access = blobAccessFromEnv();
-
   try {
-    const viaGet = await readManifestViaGet(access);
+    const viaGet = await readManifestViaGet("public");
     if (viaGet) return viaGet;
   } catch (error) {
-    if (access === "public") {
-      try {
-        return await readManifestViaGet("private");
-      } catch {
-        throw error;
-      }
-    }
     throw error;
   }
 
@@ -128,33 +120,14 @@ async function readManifest(): Promise<GalleryImage[] | null> {
 async function writeManifest(images: GalleryImage[]): Promise<void> {
   const body = JSON.stringify(images, null, 2);
   const token = process.env.BLOB_READ_WRITE_TOKEN;
-  const access = blobAccessFromEnv();
 
-  try {
-    await put(MANIFEST_PATH, body, {
-      access,
-      contentType: "application/json",
-      addRandomSuffix: false,
-      allowOverwrite: true,
-      token,
-    });
-    return;
-  } catch (error) {
-    if (access !== "public") throw error;
-
-    // Some stores were created as private-only.
-    await put(MANIFEST_PATH, body, {
-      access: "private",
-      contentType: "application/json",
-      addRandomSuffix: false,
-      allowOverwrite: true,
-      token,
-    });
-  }
-}
-
-export function getBlobUploadAccess(): BlobAccess {
-  return blobAccessFromEnv();
+  await put(MANIFEST_PATH, body, {
+    access: "public",
+    contentType: "application/json",
+    addRandomSuffix: false,
+    allowOverwrite: true,
+    token,
+  });
 }
 
 /**
@@ -168,7 +141,10 @@ export async function getGalleryImages(): Promise<GalleryImage[]> {
 
   try {
     const manifest = await readManifest();
-    return manifest ?? defaultImages();
+    if (manifest) {
+      return manifest.filter((image) => !isPrivateBlobUrl(image.src));
+    }
+    return defaultImages();
   } catch {
     return defaultImages();
   }

@@ -1,8 +1,9 @@
 "use client";
 
 import { useRef, useState, useTransition } from "react";
-import Image from "next/image";
 import { useRouter } from "next/navigation";
+import { GalleryPhoto } from "@/components/GalleryPhoto";
+import { isPrivateBlobUrl } from "@/lib/blob-url";
 import { deletePhotoAction, logoutAction } from "@/app/admin/actions";
 import type { GalleryImage } from "@/lib/projects";
 
@@ -226,13 +227,20 @@ export function AdminDashboard({
                 className="overflow-hidden rounded-sm border border-zinc-800 bg-black"
               >
                 <div className="relative aspect-[4/3]">
-                  <Image
-                    src={image.src}
-                    alt={image.alt}
-                    fill
-                    className="object-cover"
-                    sizes="(max-width: 768px) 50vw, 25vw"
-                  />
+                  {isPrivateBlobUrl(image.src) ? (
+                    <div className="flex h-full items-center justify-center bg-zinc-900 p-3 text-center text-xs text-yellow-200">
+                      This photo is private and cannot show on the site. Remove
+                      it, then upload again with a Public Blob store.
+                    </div>
+                  ) : (
+                    <GalleryPhoto
+                      src={image.src}
+                      alt={image.alt}
+                      fill
+                      className="object-cover"
+                      sizes="(max-width: 768px) 50vw, 25vw"
+                    />
+                  )}
                 </div>
                 <button
                   type="button"

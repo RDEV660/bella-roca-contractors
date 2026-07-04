@@ -1,8 +1,8 @@
 "use client";
 
 import { useState } from "react";
-import Image from "next/image";
 import { useLocale } from "@/components/LocaleProvider";
+import { GalleryPhoto } from "@/components/GalleryPhoto";
 import { GalleryImage } from "@/lib/projects";
 
 const categoryKeys = [
@@ -52,7 +52,7 @@ export function GalleryGrid({ images }: { images: GalleryImage[] }) {
             onClick={() => setLightbox(image)}
             className="group relative aspect-[4/3] overflow-hidden rounded-sm border border-zinc-800 bg-black text-left transition hover:border-gold/40"
           >
-            <Image
+            <GalleryPhoto
               src={image.src}
               alt={image.alt}
               fill
@@ -88,7 +88,7 @@ export function GalleryGrid({ images }: { images: GalleryImage[] }) {
               {t.gallery.close}
             </button>
             <div className="relative aspect-[4/3] w-full overflow-hidden rounded-sm border border-gold/30 sm:aspect-[16/10]">
-              <Image
+              <GalleryPhoto
                 src={lightbox.src}
                 alt={lightbox.alt}
                 fill

@@ -1,11 +1,11 @@
 import { put } from "@vercel/blob";
 import { revalidatePath } from "next/cache";
 import { NextResponse } from "next/server";
+import { assertPublicBlobUrl } from "@/lib/blob-url";
 import { isAdmin } from "@/lib/admin-auth";
 import {
   addGalleryImage,
   explainBlobError,
-  getBlobUploadAccess,
 } from "@/lib/gallery-store";
 import type { ProjectCategory } from "@/lib/projects";
 
@@ -65,26 +65,15 @@ export async function POST(request: Request): Promise<NextResponse> {
     const extension = file.name.split(".").pop()?.toLowerCase() || "jpg";
     const pathname = `gallery/photos/${Date.now()}-${Math.random().toString(36).slice(2, 8)}.${extension}`;
     const token = process.env.BLOB_READ_WRITE_TOKEN;
-    const access = getBlobUploadAccess();
 
-    let blob;
-    try {
-      blob = await put(pathname, file, {
-        access,
-        contentType: file.type,
-        addRandomSuffix: false,
-        token,
-      });
-    } catch (error) {
-      if (access !== "public") throw error;
+    const blob = await put(pathname, file, {
+      access: "public",
+      contentType: file.type,
+      addRandomSuffix: false,
+      token,
+    });
 
-      blob = await put(pathname, file, {
-        access: "private",
-        contentType: file.type,
-        addRandomSuffix: false,
-        token,
-      });
-    }
+    assertPublicBlobUrl(blob.url);
 
     await addGalleryImage({
       src: blob.url,

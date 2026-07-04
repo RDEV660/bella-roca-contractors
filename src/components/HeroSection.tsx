@@ -1,9 +1,9 @@
 "use client";
 
 import { useCallback, useEffect, useRef, useState } from "react";
-import Image from "next/image";
 import Link from "next/link";
 import { useLocale } from "@/components/LocaleProvider";
+import { GalleryPhoto } from "@/components/GalleryPhoto";
 import { SocialLinks } from "@/components/SocialLinks";
 import { GalleryImage } from "@/lib/projects";
 import { site } from "@/lib/site";
@@ -43,7 +43,7 @@ export function HeroSection({ images }: { images: GalleryImage[] }) {
     >
       <div className="absolute inset-0">
         {images.map((image, i) => (
-          <Image
+          <GalleryPhoto
             key={image.src}
             src={image.src}
             alt=""
