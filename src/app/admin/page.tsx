@@ -4,7 +4,6 @@ import { AdminDashboard } from "@/components/admin/AdminDashboard";
 import { isAdmin, isAdminEnabled } from "@/lib/admin-auth";
 import {
   explainBlobError,
-  getBlobUploadAccess,
   getManagedImages,
   isBlobConfigured,
 } from "@/lib/gallery-store";
@@ -64,7 +63,6 @@ export default async function AdminPage() {
       blobReady={blobConfigured && !storageError}
       storageError={storageError}
       storageErrorMessage={storageErrorMessage}
-      uploadAccess={getBlobUploadAccess()}
     />
   );
 }

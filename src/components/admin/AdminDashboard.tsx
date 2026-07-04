@@ -3,12 +3,7 @@
 import { useRef, useState, useTransition } from "react";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
-import { upload } from "@vercel/blob/client";
-import {
-  deletePhotoAction,
-  logoutAction,
-  registerPhotoAction,
-} from "@/app/admin/actions";
+import { deletePhotoAction, logoutAction } from "@/app/admin/actions";
 import type { GalleryImage } from "@/lib/projects";
 
 const CATEGORY_OPTIONS: { value: GalleryImage["category"]; label: string }[] = [
@@ -24,7 +19,6 @@ type Props = {
   blobReady: boolean;
   storageError?: boolean;
   storageErrorMessage?: string;
-  uploadAccess: "public" | "private";
 };
 
 export function AdminDashboard({
@@ -32,7 +26,6 @@ export function AdminDashboard({
   blobReady,
   storageError,
   storageErrorMessage,
-  uploadAccess,
 }: Props) {
   const router = useRouter();
   const fileRef = useRef<HTMLInputElement>(null);
@@ -57,20 +50,20 @@ export function AdminDashboard({
 
     setUploading(true);
     try {
-      const blob = await upload(`gallery/photos/${file.name}`, file, {
-        access: uploadAccess,
-        handleUploadUrl: "/api/gallery/upload",
-        contentType: file.type,
+      const formData = new FormData();
+      formData.append("file", file);
+      formData.append("category", category);
+      formData.append("alt", description);
+
+      const response = await fetch("/api/gallery/upload", {
+        method: "POST",
+        body: formData,
       });
 
-      const result = await registerPhotoAction({
-        url: blob.url,
-        alt: description,
-        category,
-      });
+      const data = (await response.json()) as { error?: string };
 
-      if (!result.ok) {
-        setError(result.error ?? "Something went wrong.");
+      if (!response.ok) {
+        setError(data.error ?? "The photo could not be uploaded.");
         return;
       }
 

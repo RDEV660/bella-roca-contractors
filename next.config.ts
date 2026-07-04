@@ -7,12 +7,17 @@ const nextConfig: NextConfig = {
         protocol: "https",
         hostname: "**.public.blob.vercel-storage.com",
       },
+      {
+        protocol: "https",
+        hostname: "**.blob.vercel-storage.com",
+      },
     ],
   },
   experimental: {
     serverActions: {
-      bodySizeLimit: "10mb",
+      bodySizeLimit: "15mb",
     },
+    proxyClientMaxBodySize: "15mb",
   },
 };
 
